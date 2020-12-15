@@ -1,7 +1,7 @@
 //START-OF-SCRIPT
 //comment0
-timeout(time: 60, unit: 'SECONDS') {
-    pipeline {
+pipeline {
+    timeout(time: 60, unit: 'SECONDS') {
         def RELEASENAME = "webapp.war"
 
         properties([

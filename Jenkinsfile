@@ -1,25 +1,27 @@
-pipeline {
-  agent any
-  stages {
-    stage('Clone') {
-      steps {
-        git 'https://github.com/greggrimes52/devops-webapp.git'
-      }
-    }
+//START-OF-SCRIPT
+//comment1
+timeout(time: 60, unit: 'SECONDS') {
+    node {
+        def RELEASENAME = "webapp.war"
 
-    stage('Build') {
-      steps {
-        def GRADLE_HOME = tool(name: 'gradle-4.10.2', type: 'hudson.plugins.gradle.GradleInstallation')
-        sh '${GRADLE_HOME}/bin/gradle tasks'
-        sh '${GRADLE_HOME}/bin/gradle build'
-      }
-    }
+        properties([
+            pipelineTriggers([pollSCM('H/1 * * * 1-5')])
+        ])
+        
+        def GRADLE_HOME = tool name: 'gradle-4.10.2', type: 'hudson.plugins.gradle.GradleInstallation'
+        sh "${GRADLE_HOME}/bin/gradle tasks"
 
-    stage('Archive') {
-      steps {
-        archiveArtifacts 'build/lib/*.war'
-      }
-    }
+        stage('Clone') {
+            git url: 'https://github.com/greggrimes52/devops-webapp.git'                
+        }
 
-  }
+        stage('Build') {
+            sh "${GRADLE_HOME}/bin/gradle build -PwarName=${RELEASENAME} --info"
+        }
+
+        stage('Archive') {
+            archiveArtifacts "build/libs/${RELEASENAME}"
+        }    
+    }
 }
+//END-OF-SCRIPT

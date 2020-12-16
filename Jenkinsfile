@@ -1,6 +1,6 @@
 //START-OF-SCRIPT
 //comment1
-timeout(time: 60, unit: 'SECONDS') {
+timeout(time: 600, unit: 'SECONDS') {
     node {
         def RELEASENAME = "webapp.war"
 
